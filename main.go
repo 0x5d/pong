@@ -3,15 +3,17 @@ package main
 import (
 	"flag"
 	"fmt"
+	"log"
 	"os"
 
-	"github.com/castillobg/ping/api"
-	"github.com/castillobg/ping/brokers"
-	_ "github.com/castillobg/ping/brokers/rabbit"
+	"github.com/castillobg/pong/api"
+	"github.com/castillobg/pong/brokers"
+	_ "github.com/castillobg/pong/brokers/rabbit"
+	"github.com/castillobg/pong/core"
 )
 
 func main() {
-	brokerAddr := flag.String("address", "localhost:9092", "The broker's address.")
+	brokerAddr := flag.String("address", "localhost:5672", "The broker's address.")
 	brokerName := flag.String("broker", "rabbit", "The broker to be used. Currently supported: rabbit.")
 	port := flag.Int("port", 8080, "The port where the api will listen.")
 	flag.Parse()
@@ -21,15 +23,21 @@ func main() {
 		fmt.Printf("No broker with name \"%s\" found.\n", *brokerName)
 		os.Exit(1)
 	}
-	broker, err := brokerFactory.New(*brokerAddr)
+	broker, cleanup, err := brokerFactory.New(*brokerAddr)
+	defer cleanup()
 	if err != nil {
-		fmt.Printf("Error initializing broker client for \"%s\": %s\n", *brokerName, err.Error())
+		log.Printf("Error initializing broker client for \"%s\": %s\n", *brokerName, err.Error())
+		os.Exit(1)
+	}
+	messages := make(chan []byte)
+	err = broker.Listen("pings", messages)
+	if err != nil {
+		log.Println(err)
 		os.Exit(1)
 	}
 
-	go api.Listen(*port)
+	core.Listen(broker, messages)
 
-	fmt.Printf("pong is running on port: %d\n", port)
-
-	broker.Start()
+	log.Printf("ping is running on port: %d\n", *port)
+	api.Listen(*port)
 }

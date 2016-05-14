@@ -8,7 +8,10 @@ and Kafka on Docker.
 - Make sure [Golang](https://golang.org/dl/) and
 [Docker](https://docs.docker.com/engine/installation/) are properly installed.
 
-- Run the [RabbitMQ container](https://hub.docker.com/_/rabbitmq/).
+- Run the [RabbitMQ container](https://hub.docker.com/_/rabbitmq/):
+  ```sh
+  docker run -d --hostname ping-pong-broker --name broker rabbitmq:3
+  ```
 
 - Clone this repo.
 
