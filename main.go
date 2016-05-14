@@ -38,6 +38,6 @@ func main() {
 
 	core.Listen(broker, messages)
 
-	log.Printf("ping is running on port: %d\n", *port)
+	log.Printf("pong is running on port: %d\n", *port)
 	api.Listen(*port)
 }
