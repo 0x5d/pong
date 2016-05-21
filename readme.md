@@ -35,7 +35,7 @@ you can run it with the [Docker RabbitMQ container](https://hub.docker.com/_/rab
   ./pong -delay 1
   ```
 
-- You can now go over to the [ping](https://github.com/castillobg/pong) repo and start ping-ponging.
+- You can now go over to the [ping](https://github.com/castillobg/ping) repo and start ping-ponging.
 
 - At any time, you can query the pongs issued by GETting /api/pongs.
   ```
