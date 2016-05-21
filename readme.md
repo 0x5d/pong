@@ -28,11 +28,11 @@ you can run it with the [Docker RabbitMQ container](https://hub.docker.com/_/rab
 
 - Run `pong`:
   ```
-  ./pong -port 8080 -broker rabbit -address localhost:5672
+  ./pong -port 8080 -broker rabbit -address localhost:5672 -delay 1
   ```
   or simply
   ```
-  ./pong
+  ./pong -delay 1
   ```
 
 - You can now go over to the [ping](https://github.com/castillobg/pong) repo and start ping-ponging.

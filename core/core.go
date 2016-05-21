@@ -2,6 +2,7 @@ package core
 
 import (
 	"sync"
+	"time"
 
 	"github.com/castillobg/pong/brokers"
 )
@@ -13,22 +14,24 @@ type pongs struct {
 
 var p *pongs
 
-func Listen(broker brokers.BrokerAdapter, pings chan []byte) {
+func Listen(broker brokers.BrokerAdapter, pings chan []byte, delay int) {
 	p = &pongs{}
 	go func() {
-		// Listens for pong events
+		// Listens for ping events
 		for range pings {
-			// If a pong arrives, respond with a ping.
-			broker.Publish("pong", "pongs")
-			p.Lock()
-			p.count++
-			p.Unlock()
+			// If a ping arrives, wait for 2 sec. then respond with a pong.
+
+			go func() {
+				time.Sleep(time.Duration(delay) * time.Second)
+				broker.Publish("pong", "pongs")
+				p.Lock()
+				p.count++
+				p.Unlock()
+			}()
 		}
 	}()
 }
 
 func Pongs() int {
-	p.Lock()
-	defer p.Unlock()
 	return p.count
 }

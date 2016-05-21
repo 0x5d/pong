@@ -17,6 +17,7 @@ func main() {
 	brokerAddr := flag.String("address", "localhost:5672", "The broker's address.")
 	brokerName := flag.String("broker", "rabbit", "The broker to be used. Currently supported: rabbit.")
 	port := flag.Int("port", 8080, "The port where the api will listen.")
+	delay := flag.Int("delay", 0, "The amount of time to wait before sending back a pong.")
 	flag.Parse()
 
 	if *help {
@@ -42,7 +43,7 @@ func main() {
 		os.Exit(1)
 	}
 
-	core.Listen(broker, messages)
+	core.Listen(broker, messages, *delay)
 
 	log.Printf("pong is running on port: %d\n", *port)
 	api.Listen(*port)
